@@ -4,9 +4,10 @@ import { HouseLine } from "phosphor-react"
 type BreadcrumbProps = {
     title: string,
     link: string,
+    active: string,
 }
 
-function Breadcrumb({title, link}: BreadcrumbProps) {
+function Breadcrumb({title, link, active}: BreadcrumbProps) {
 
     return (
         <>
@@ -58,7 +59,7 @@ function Breadcrumb({title, link}: BreadcrumbProps) {
                                 />
                             </svg>
                             <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                                Lista
+                                {active}
                             </span>
                         </div>
                     </li>

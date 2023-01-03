@@ -41,8 +41,6 @@ export function UserContextProvider({ children }: UserProviderProps) {
         })
     }, [])
 
-    console.log(profile)
-
     function setUserProfile(profile: ProfileProps) {
         setProfile(profile)
     }

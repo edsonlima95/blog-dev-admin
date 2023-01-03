@@ -15,7 +15,7 @@ function MenuLeft() {
                         <Link href="/" className="flex"><HouseLine size={24} className="mr-2" /> Home</Link>
                     </li>
                     <li className="hover:text-white hover:bg-[#262933] hover:rounded-lg p-3" >
-                        <Link href="/category" className="flex"><Copy size={24} className="mr-2" /> Categorias</Link>
+                        <Link href="/category/list" className="flex"><Copy size={24} className="mr-2" /> Categorias</Link>
                     </li>
 
                     <li className="hover:text-white hover:bg-[#262933] hover:rounded-lg p-3" >
