@@ -4,8 +4,11 @@ import { useEffect, useState } from "react"
 import api from "../../../services/axios"
 import ReactPaginate from "react-paginate"
 import usePagination from "../../../hooks/usePagination"
-import { GetServerSideProps, GetStaticProps } from "next"
+import { GetServerSideProps } from "next"
 import { getCookie } from "cookies-next"
+import { PencilLine, Trash } from 'phosphor-react'
+import Link from "next/link"
+import { toast } from "react-toastify"
 
 type Category = {
     id: number,
@@ -13,20 +16,16 @@ type Category = {
     description?: string
 }
 
-type CategoriesProps = {
-    data: Category[]
-}
-
 function Category() {
 
 
-    const [categories, setCategories] = useState({} as CategoriesProps)
+    const [categories, setCategories] = useState<Category[]>([])
 
     const [search, setSearch] = useState("")
 
     const itemsPerPage = 3
 
-    const { currentData, pageCount, handlePaginate } = usePagination(categories.data, itemsPerPage)
+    const { currentData, pageCount, handlePaginate } = usePagination<Category>(categories, itemsPerPage)
 
     useEffect(() => {
 
@@ -40,12 +39,28 @@ function Category() {
         api.get('/categories').then((response) => {
 
             setCategories(response.data)
+            
+        }).catch((error) => {
+            console.log(error)
+        })
+        
+    }
 
+    function removeCategory(id: number) {
+        
+        api.delete(`/categories/${id}`).then((response) => {
+            const { categories } = response.data
+            setCategories(categories)
+            
+            toast.success(response.data.message)
+            
         }).catch((error) => {
             console.log(error)
         })
 
     }
+
+
 
 
     return (
@@ -100,8 +115,13 @@ function Category() {
                                 <td className="py-4 px-6">{category.id}</td>
                                 <td className="py-4 px-6">{category.name}</td>
                                 <td className="py-4 px-6">{category.description ? category.description : '-'}</td>
-                                <td className="py-4 px-6 text-center">
-                                    <button type="button">Editar</button>
+                                <td className="py-4 px-6 flex gap-4 items-center justify-center">
+                                    <Link href={`/category/${category.id}`}>
+                                        <PencilLine size={20} className="text-white bg-blue-700 w-10 p-2 rounded-full h-10" />
+                                    </Link>
+                                    <Link href="" onClick={() => removeCategory(category?.id)}>
+                                        <Trash size={20} className="text-white bg-red-500 w-10 p-2 rounded-full h-10" />
+                                    </Link>
                                 </td>
                             </tr>
                         )}

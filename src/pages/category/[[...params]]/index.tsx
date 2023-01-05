@@ -1,4 +1,5 @@
 import { useRouter } from "next/router"
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -7,6 +8,7 @@ import ErrorMessage from "../../../components/Message";
 import api from "../../../services/axios";
 
 type CategoryProps = {
+    id?: string,
     name: string,
     description?: string
 }
@@ -14,15 +16,40 @@ type CategoryProps = {
 
 function Category() {
 
-    const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<CategoryProps>();
+    const { register, handleSubmit, reset, setValue, setError, formState: { errors } } = useForm<CategoryProps>();
 
     const router = useRouter()
 
     const id = router.query.params?.[0]
 
+    useEffect(() => {
+
+
+        if (id) {
+
+            api.get(`/categories/${id}`).then(response => {
+                const category = response.data
+
+
+                setValue('name', category.name)
+                setValue('description', category.desciption)
+
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        }
+
+    }, [id])
+
 
     function onSubmit(data: CategoryProps) {
-        create(data)
+        if(id){
+            update(data)
+        }else{
+
+            create(data)
+        }
     }
 
     function create(data: CategoryProps) {
@@ -46,6 +73,30 @@ function Category() {
         })
 
     }
+
+    function update(data: CategoryProps) {
+
+        api.put(`/categories/${id}`, data).then((response) => {
+
+            toast.success(response?.data.message)
+            
+
+        }).catch((error) => {
+            const { errors } = error.response.data
+
+            if (errors) {
+
+                for (const error of errors) {
+                    setError(error.field, { message: error.message })
+                }
+            }
+
+            toast.error(error.response?.data.message)
+        })
+
+    }
+
+
 
     function resetFields() {
         reset({
